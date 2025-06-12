@@ -54,6 +54,9 @@ class Game extends Phaser.Scene {
       // Tutorial is now visible
       console.log('Game scene ready')
     })
+
+    // Create trail layer for particles
+    this.trailLayer = this.add.container()
   }
 
   initializeGameObjects() {

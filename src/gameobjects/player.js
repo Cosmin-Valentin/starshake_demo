@@ -1,4 +1,5 @@
 import Explosion from './explosion'
+import { LightParticle } from './particle'
 
 class Player extends Phaser.GameObjects.Sprite {
   constructor(scene, x, y) {
@@ -17,23 +18,6 @@ class Player extends Phaser.GameObjects.Sprite {
 
     // Initialize at correct position
     this.setPosition(x, y)
-
-    // Add exhaust effect
-    this.exhaust = this.scene.add.particles(0, 0, {
-      speed: { min: 50, max: 100 },
-      angle: { min: 85, max: 95 },
-      scale: { start: 0.4, end: 0 },
-      lifespan: 400,
-      quantity: 2,
-      frequency: 50,
-      blendMode: 'ADD',
-      tint: 0xffffff,
-      alpha: { start: 0.6, end: 0 }
-    })
-
-    // Attach exhaust to player
-    this.exhaust.startFollow(this)
-    this.exhaust.setPosition(0, 10)
   }
 
   init() {
@@ -65,12 +49,22 @@ class Player extends Phaser.GameObjects.Sprite {
     } else {
       this.body.setVelocityX(0)
     }
+
+    this.scene.trailLayer.add(
+      new LightParticle(
+        this.scene,
+        this.x,
+        this.y + this.height / 2,
+        0xffffff,
+        8,
+        0.5
+      )
+    )
   }
 
   dead() {
     this.scene.cameras.main.shake(500)
     new Explosion(this.scene, this.x, this.y, 10)
-    this.exhaust.destroy()
     this.destroy()
   }
 }
